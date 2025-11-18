@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User List - Admin</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar h2 {
+            margin: 0;
+        }
+
+        .navbar a {
+            color: white;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(255,255,255,0.2);
+        }
+
+        tr {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-block {
+            background: #e74c3c;
+        }
+
+        .btn-unblock {
+            background: #27ae60;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .pagination a {
+            padding: 10px 15px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .pagination a.active, .pagination a:hover {
+            background: rgba(255,255,255,0.4);
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-active { background: #27ae60; color: white; }
+        .status-blocked { background: #e74c3c; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <h2>Admin Panel - <%= adminName %></h2>
+        <div>
+            <a href="/admin/dashboard">Dashboard</a>
+            <a href="/admin/user-list">Users</a>
+            <a href="/admin/logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h2>Manage Users (<%= totalUsers %>)</h2>
+        </div>
+
+        <% if (users.length === 0) { %>
+            <p>No users found.</p>
+        <% } else { %>
+            <table id="userTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Joined</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(user => { %>
+                        <tr data-user-id="<%= user._id %>">
+                            <td><%= user.name %></td>
+                            <td><%= user.email %></td>
+                            <td>
+                                <span class="status <%= user.isBlocked ? 'status-blocked' : 'status-active' %>">
+                                    <%= user.isBlocked ? 'Blocked' : 'Active' %>
+                                </span>
+                            </td>
+                            <td><%= new Date(user.createdAt).toLocaleDateString('en-IN') %></td>
+                            <td>
+                                <button 
+                                    class="btn toggle-block <%= user.isBlocked ? 'btn-unblock' : 'btn-block' %>"
+                                    data-user-id="<%= user._id %>"
+                                    data-blocked="<%= user.isBlocked %>">
+                                    <%= user.isBlocked ? 'Unblock' : 'Block' %>
+                                </button>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+
+            <!-- Pagination -->
+            <% if (totalPages > 1) { %>
+                <div class="pagination">
+                    <% for(let i = 1; i <= totalPages; i++) { %>
+                        <a href="/admin/user-list?page=<%= i %>" 
+                           class="<%= currentPage === i ? 'active' : '' %>">
+                            <%= i %>
+                        </a>
+                    <% } %>
+                </div>
+            <% } %>
+        <% } %>
+    </div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    document.querySelectorAll(".toggle-block").forEach(button => {
+        button.addEventListener("click", async function () {
+            const userId = this.getAttribute("data-user-id");
+
+            try {
+                const res = await fetch("/admin/blockUser", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({ userId })
+                });
+
+                const data = await res.json();
+                if (!data.success) return alert("Action failed");
+
+                // Update button text
+                this.textContent = data.isBlocked ? "Unblock" : "Block";
+
+        
+                if (data.isBlocked) {
+                    this.classList.remove("btn-block");
+                    this.classList.add("btn-unblock");
+                } else {
+                    this.classList.remove("btn-unblock");
+                    this.classList.add("btn-block");
+                }
+
+                const row = this.closest("tr");
+                const statusBadge = row.querySelector(".status");
+
+                if (data.isBlocked) {
+                    statusBadge.textContent = "Blocked";
+                    statusBadge.classList.remove("status-active");
+                    statusBadge.classList.add("status-blocked");
+                } else {
+                    statusBadge.textContent = "Active";
+                    statusBadge.classList.remove("status-blocked");
+                    statusBadge.classList.add("status-active");
+                }
+
+            } catch (err) {
+                console.error("Error:", err);
+                alert("Internal server error");
+            }
+        });
+    });
+});
+</script>
+
+
+</body>
+</html>

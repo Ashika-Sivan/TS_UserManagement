@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar a {
+            color: white;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        .card-wrapper {
+            display: flex;
+            gap: 20px;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .card {
+            flex: 1;
+            padding: 25px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            backdrop-filter: blur(8px);
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <h2>Admin Dashboard</h2>
+        <a href="/admin/user-list">Manage Users</a>
+        <a href="/admin/logout",class="btn btn-danger">Logout</a>
+    </div>
+
+    <div class="container">
+        <h2>Welcome To Admin Dashboard</h2>
+
+        <div class="card-wrapper">
+            <div class="card">
+                <h3>Total Users</h3>
+                <p><%= totalUsers %></p>
+            </div>
+
+            <div class="card">
+                <h3>Active Users</h3>
+                <p><%= activeUsers %></p>
+            </div>
+
+            <div class="card">
+                <h3>Blocked Users</h3>
+                <p><%= blockedUsers %></p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

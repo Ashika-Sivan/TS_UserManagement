@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .navbar {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar h1 {
+            color: #667eea;
+        }
+        .navbar a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border-radius: 5px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        h2 {
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        button, .cancel-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .cancel-btn {
+            background: #f0f0f0;
+            color: #555;
+        }
+        .message {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>User Management</h1>
+        <a href="/profile">Back to Profile</a>
+    </div>
+
+    <div class="container">
+        <h2>Edit Profile</h2>
+
+        <div class="message success" id="successMsg"></div>
+        <div class="message error" id="errorMsg"></div>
+
+        <form id="editForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" value="<%= user.name %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="<%= user.email %>" disabled readonly >
+            </div>
+
+            <div class="form-group">
+                <label for="phone">phone number</label>
+                <input type="text" id="phone" name="phone" value="<%= user.phone %>" required>
+            </div>
+
+            <div class="button-group">
+                <button type="submit">Save Changes</button>
+                <a href="/profile" class="cancel-btn">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+  <script>
+    const form = document.getElementById('editForm');
+    const successMsg = document.getElementById('successMsg');
+    const errorMsg = document.getElementById('errorMsg');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        successMsg.style.display = 'none';
+        errorMsg.style.display = 'none';
+
+        const formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value
+        };
+
+        // 🔥 ADD THIS VALIDATION HERE
+        const phonePattern = /^[6-9]\d{9}$/;   // 10-digit Indian mobile number
+        if (!phonePattern.test(formData.phone)) {
+            errorMsg.textContent = "Please enter a valid 10-digit phone number.";
+            errorMsg.style.display = 'block';
+            return;
+        }
+
+        try {
+            const response = await fetch('/editProfile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                successMsg.textContent = data.message;
+                successMsg.style.display = 'block';
+
+                setTimeout(() => {
+                    window.location.href = '/profile';
+                }, 1500);
+            } else {
+                errorMsg.textContent = data.message;
+                errorMsg.style.display = 'block';
+            }
+        } catch (error) {
+            errorMsg.textContent = 'Network error. Please try again.';
+            errorMsg.style.display = 'block';
+        }
+    });
+</script>
+
+
+</body>
+</html>
