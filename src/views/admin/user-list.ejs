@@ -203,7 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const userId = this.getAttribute("data-user-id");
 
             try {
-                const res = await fetch("/admin/blockUser", {
+                const res = await fetch("/admin/user-list/blockUser", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     credentials: "include",

@@ -11,7 +11,7 @@ router.get('/dashboard',requireAdmin,getDashboard)
 router.get('/user-list',requireAdmin,getUserList)
 
 router.post('/user-list/blockUser', requireAdmin, blockUser);
-// router.post('/user-list/unBlockUser', requireAdmin, unBlockUser);
+router.post('/user-list/unBlockUser', requireAdmin, unBlockUser);
 
 router.get('/logout',adminLogout)
 

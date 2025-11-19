@@ -42,12 +42,13 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
         const newUser = await User.create({
             name,
             email,
+            phone,
             password: hashPassword,
             isAdmin: isFirstUser,  
             isBlocked: false
         });
         
-        console.log("✅ User registered:", newUser.email, isFirstUser ? "(ADMIN)" : "");
+        console.log(" User registered:", newUser.email, isFirstUser ? "(ADMIN)" : "");
         
         console.log("User registered:", newUser.email);
         
@@ -236,7 +237,7 @@ export const logoutUser=(req:Request,res:Response):void=>{
             }
             res.clearCookie('connect.sid')
     //   req.flash("success", "Logged out successfully!");
-            return res.redirect('login')
+            return res.redirect('/login')
             
         })
         

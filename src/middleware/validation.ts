@@ -1,7 +1,7 @@
 import {Request,Response,NextFunction}from "express"
 
 export const validateRegister=(req:Request,res:Response,next:NextFunction):void=>{
-    const {name,email,phonne,password}=req.body;
+    const {name,email,phone,password}=req.body;
 
     const errors:string[]=[];
 
@@ -13,6 +13,10 @@ export const validateRegister=(req:Request,res:Response,next:NextFunction):void=
     const emailRegex= /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if(!email||!emailRegex.test(email)){
         errors.push('please provide a valid email address')
+    }
+
+     if (!phone || phone.length !== 10 || !/^\d{10}$/.test(phone)) {
+        errors.push('Phone must be exactly 10 digits');
     }
 
 

@@ -32,7 +32,7 @@ app.use(
         saveUninitialized: false,
         cookie: {
             secure: false,
-            maxAge: 70 * 60 * 60 * 1000
+            maxAge: 1000 * 60 * 24
         }
     })
 );
@@ -53,15 +53,15 @@ app.use('/admin',adminRoutes);
 
 
 app.get("/test", (req: Request, res: Response) => {
-    console.log("✅ Test route accessed");
+    console.log("Test route accessed");
     res.send("Server is working!");
 });
 
-app.listen(3000, () => {
-    console.log(`🚀 Server running on http://localhost:3000`);
-    console.log(`📝 Register page: http://localhost:3000/register`);
-    console.log(`🔐 Login page: http://localhost:3000/login`);
-    console.log(`🧪 Test route: http://localhost:3000/test`);
-});
+// app.listen(3000, () => {
+//     console.log(` Server running on http://localhost:3000`);
+//     console.log(` Register page: http://localhost:3000/register`);
+//     console.log(` Login page: http://localhost:3000/login`);
+//     console.log(`🧪 Test route: http://localhost:3000/test`);
+// });
 
 export default app;

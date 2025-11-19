@@ -232,7 +232,8 @@
             <% if (user.isAdmin) { %>
                 <a href="/admin/dashboard">⚙️ Admin</a>
             <% } %>
-            <a href="/logout" class="logout-btn">🚪 Logout</a>
+            <a href="#" class="logout-btn" onclick="event.preventDefault(); confirmLogout();">🚪 Logout</a>
+
            
 
         </div>
@@ -246,41 +247,11 @@
             <p>Great to see you again. Here's your dashboard overview.</p>
         </div>
 
-        <!-- Stats -->
-        <!-- <div class="stats-container">
-            <div class="stat-box">
-                <div class="stat-number">1</div>
-                <div class="stat-label">Active Session</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-number"><%= Math.floor((Date.now() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24)) %></div>
-                <div class="stat-label">Days Member</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-number"><%= user.isAdmin ? 'Admin' : 'User' %></div>
-                <div class="stat-label">Account Type</div>
-            </div>
-        </div> -->
 
-        <!-- Info Cards -->
-        <!-- <div class="cards-grid">
-            <div class="info-card">
-                <h3><span class="icon">👤</span> Your Profile</h3>
-                <p>View and manage your personal information, update your details, and customize your account settings.</p>
-            </div>
-            <div class="info-card">
-                <h3><span class="icon">🔒</span> Security</h3>
-                <p>Your account is secured with encrypted password. Always keep your credentials safe and confidential.</p>
-            </div>
-            <div class="info-card">
-                <h3><span class="icon">📊</span> Activity</h3>
-                <p>Track your account activity, login history, and manage your active sessions across devices.</p>
-            </div>
-        </div> -->
 
-        <!-- User Details -->
+       
         <div class="user-details">
-            <h3>📋 Account Information</h3>
+            <h3> Account Information</h3>
             <div class="detail-row">
                 <span class="detail-label">Full Name</span>
                 <span class="detail-value"><%= user.name %></span>
@@ -289,14 +260,7 @@
                 <span class="detail-label">Email Address</span>
                 <span class="detail-value"><%= user.email %></span>
             </div>
-            <!-- <div class="detail-row">
-                <span class="detail-label">Account Type</span>
-                <span class="detail-value">
-                    <span class="badge <%= user.isAdmin ? 'badge-admin' : 'badge-user' %>">
-                        <%= user.isAdmin ? '👑 Admin' : '👤 Regular User' %>
-                    </span>
-                </span>
-            </div> -->
+            
              <div class="detail-row">
                 <span class="detail-label">Phone Number</span>
                 <span class="detail-value">
@@ -310,19 +274,49 @@
             </div>
             <div class="detail-row">
                 <span class="detail-label">Account Status</span>
-                <span class="detail-value">✅ Active</span>
+                <span class="detail-value">✅Active</span>
             </div>
         </div>
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-            <a href="/profile" class="action-btn">👤 View Full Profile</a>
-            <a href="/editProfile" class="action-btn">✏️ Edit Profile</a>
-            <a href="/change-password" class="action-btn">🔑 Change Password</a>
             <% if (user.isAdmin) { %>
-                <a href="/admin/dashboard" class="action-btn">⚙️ Admin Dashboard</a>
+                <a href="/admin/dashboard" class="action-btn"> Admin Dashboard</a>
             <% } %>
         </div>
     </div>
+
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function confirmLogout() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to logout?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#667eea',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, logout',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                Swal.fire({
+                    title: 'Logging out...',
+                    text: 'Please wait',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                window.location.href = '/logout';
+            }
+        });
+    }
+</script>
+
 </body>
 </html>

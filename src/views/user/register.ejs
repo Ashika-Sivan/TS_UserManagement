@@ -107,12 +107,12 @@
         <form id="registerForm">
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="name" required placeholder="Enter your full name">
             </div>
             
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" required placeholder="Enter your email">
             </div>
             
                     <div class="form-group">
@@ -132,14 +132,14 @@
             
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" required minlength="6">
+                <input type="password" id="password" name="password" required minlength="6" placeholder="Enter your password">
             </div>
             
             <button type="submit">Register</button>
         </form>
         
         <div class="login-link">
-            Already have an account? <a href="/login">Login here</a>
+            Already have an account? <a href="/home">Login here</a>
         </div>
     </div>
 
@@ -178,7 +178,7 @@
                     form.reset();
                     
                     setTimeout(() => {
-                        window.location.href = '/login';
+                        window.location.href = '/home';
                     }, 2000);
                 } else {
                     errorDiv.textContent = data.message;
